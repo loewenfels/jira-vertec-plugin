@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>$i18n.getText("ch.loewenfels.jira.plugin.config.title")</title>
+<meta name="decorator" content="atl.admin">
+</head>
+<body>
+	<table width="100%" cellspacing="0" cellpadding="10" border="0">
+		<tbody>
+			<tr>
+				<td>
+					<table class="jiraform maxWidth">
+						<tbody>
+							<tr>
+								<td class="jiraformheader">
+									<h3 class="formtitle">$i18n.getText("ch.loewenfels.jira.plugin.config.title")</h3>
+								</td>
+							</tr>
+							<tr>
+								<td class="jiraformbody">
+									<p>
+										$i18n.getText("ch.loewenfels.jira.plugin.config.instructions")</p>
+									<form method="post" action="VertecConfigAction!update.jspa">
+										<p>
+										<table>
+											<tr>
+												<td>$i18n.getText("ch.loewenfels.jira.plugin.config.url")</td>
+												<td><input type="text" name="vertecUrl" size="40"
+													#if ($!vertecUrl) value="$vertecUrl" #end /></td>
+											</tr>
+											<tr>
+												<td>$i18n.getText("ch.loewenfels.jira.plugin.config.user")</td>
+												<td><input type="text" name="vertecUser"
+													#if ($!vertecUser) value="$vertecUser" #end /></td>
+											</tr>
+											<tr>
+												<td>$i18n.getText("ch.loewenfels.jira.plugin.config.password")</td>
+												<td><input type="password" name="vertecPassword"
+													#if ($!vertecPassword) value="$vertecPassword" #end /></td>
+											</tr>
+											<tr>
+												<td>$i18n.getText("ch.loewenfels.jira.plugin.config.sync.IntervalInMs")</td>
+												<td><input type="text" name="interval"
+													#if ($!interval) value="$interval" #end /></td>
+											</tr>
+											<tr>
+												<td>$i18n.getText("ch.loewenfels.jira.plugin.config.bookingEnabled")</td>
+												<td><input type="checkbox" name="bookingEnabled" value="true"
+													#if ($!bookingEnabled) checked="checked" #end /></td>
+											</tr>
+											<tr>
+												<td colspan="2"><input type="submit"
+													value="$i18n.getText('ch.loewenfels.jira.plugin.config.applyButton')">
+												</td>
+											</tr>
+										</table>
+										</p>
+									</form>
+								</td>
+							</tr>
+							<tr>
+								<td class="jiraformheader">
+									<h3 class="formtitle">$i18n.getText("ch.loewenfels.jira.plugin.config.fields.title")</h3>
+								</td>								
+							</tr>
+							<tr><td><table>
+							#foreach ($s in $schemeInfos)
+							<tr>
+								<td>$s.scheme.name</td>
+								<td><a href="VertecConfigAction!sync.jspa?fieldid=$s.customfieldId&schemeid=$s.scheme.id">$i18n.getText("ch.loewenfels.jira.plugin.config.fields.syncButton")</a></td>
+							</tr>
+							<tr>
+								<td>$i18n.getText("ch.loewenfels.jira.plugin.config.sync.timestamp")</td>
+								<td>$s.timestamp</td>
+							</tr>								
+							<tr>
+								<td>$i18n.getText("ch.loewenfels.jira.plugin.config.sync.protocol")</td>
+								<td style="vertical-align: top">
+								#foreach ($line in $s.protocol)
+									$line<br/>
+								#end
+								</td>
+								</tr>
+							#end
+							</table>	
+							</td>
+							</tr>
+						</tbody>
+					</table>
+					<p></p>
+					
+					
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

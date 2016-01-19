@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${project.groupId}.${project.artifactId}"
+	name="${project.name}" plugins-version="2">
+	<plugin-info>
+		<description>${project.description}</description>
+		<version>${project.version}</version>
+		<vendor name="${project.organization.name}" url="${project.organization.url}" />
+		<param name="plugin-icon">images/pluginIcon.png</param>
+		<param name="plugin-logo">images/pluginLogo.png</param>
+	</plugin-info>	
+	<!-- add our i18n resource -->
+	<resource type="i18n" name="i18n" location="i18n.messages" />
+	<!-- used component for config -->
+	<component-import key="pluginSettingsFactory"
+		interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
+	<!-- used component for searcher -->
+	<component key="componentLocator" name="Component Locator" class="com.atlassian.jira.util.JiraComponentLocator">
+       <interface>com.atlassian.jira.util.ComponentLocator</interface>
+	</component>
+	<component key="componentFactory" name="Component Factory" class="com.atlassian.jira.util.JiraComponentFactory">
+       <interface>com.atlassian.jira.util.ComponentFactory</interface>
+	</component>		
+	<!-- vertec config service -->
+	 <component key="vertecConfig" name="Vertec Configuration Service"
+		class="ch.loewenfels.jira.plugin.config.VertecConfig" />
+	<component key="customFieldProvider" name="Common Customfield Provider"
+		class="ch.loewenfels.jira.plugin.customfields.CustomFieldProvider" />
+	<component key="jiraBookingService" name="Jira Worklog Booking Service"
+		class="ch.loewenfels.jira.plugin.worklog.JiraBookingService" />
+	<component key="vertecBookingService" name="Vertec Worklog Booking Service"
+		class="ch.loewenfels.jira.plugin.vertec.VertecBookingService" />
+	 <component key="vertecSync" name="Vertec Synchronizer Service"
+		class="ch.loewenfels.jira.plugin.synchronisation.SyncService" />
+		
+	<!-- listener for worklog -->
+	<component-import key="eventPublisher" interface="com.atlassian.event.api.EventPublisher"/>
+	<component key="eventListener" class="ch.loewenfels.jira.plugin.worklog.WorklogListener">
+    	<description>Processes the incoming JIRA issue events for worklog</description>
+	</component>
+
+	<!-- SAL scheduling -->
+	<component-import key="pluginScheduler">
+        <description>SAL Scheduler</description>
+        <interface>com.atlassian.sal.api.scheduling.PluginScheduler</interface>
+    </component-import>
+	<component key="schedulerComponent" class="ch.loewenfels.jira.plugin.synchronisation.BackgroundTaskSchedulerImpl" system="true" public="true">
+		<description>The plugin component that schedules the background task for automatic sync</description>
+        <interface>com.atlassian.sal.api.lifecycle.LifecycleAware</interface>
+        <interface>ch.loewenfels.jira.plugin.synchronisation.BackgroundTaskScheduler</interface>
+	</component>
+		
+	<!-- add our web resources -->
+	<web-resource key="jira-vertec-plugin-resources" name="jira-vertec-plugin Web Resources">
+		<dependency>com.atlassian.auiplugin:ajs</dependency>
+		<resource type="download" name="jira-vertec-plugin.css"
+			location="/css/jira-vertec-plugin.css" />
+		<resource type="download" name="jira-vertec-plugin.js"
+			location="/js/jira-vertec-plugin.js" />
+		<resource type="download" name="images/" location="/images" />
+		<context>jira-vertec-plugin</context>
+	</web-resource>
+	<!-- import from the product container -->
+	<component-import key="applicationProperties"
+		interface="com.atlassian.sal.api.ApplicationProperties" />
+	<customfield-type name="Vertec Project Cascade Custom Field"
+		i18n-name-key="ch.loewenfels.jira.plugin.customfields.vertec.name" key="vertec.project.cascading"
+		class="ch.loewenfels.jira.plugin.customfields.VertecProjectCascadeFieldType">
+		<description key="ch.loewenfels.jira.plugin.customfields.vertec.description" i18n-name-key="ch.loewenfels.jira.plugin.customfields.vertec.description"/>
+		<resource name="view" type="velocity"
+			location="/templates/plugins/fields/view/view-cascadingselect.vm" />
+		<resource name="edit" type="velocity"
+			location="/templates/plugins/fields/edit/edit-cascadingselect.vm" />
+	</customfield-type>
+    <customfield-searcher key="verteccascadingselectsearcher" name="Vertec Cascading Select Searcher"
+        i18n-name-key="admin.customfield.searcher.cascadingselectsearcher.name"
+        class="com.atlassian.jira.issue.customfields.searchers.CascadingSelectSearcher">
+        <description key="admin.customfield.searcher.cascadingselectsearcher.desc">Search for multiple values using two select lists.</description>
+
+        <resource type="velocity" name="search" location="templates/plugins/fields/edit-searcher/search-cascadingselect.vm"/>
+        <resource type="velocity" name="view" location="templates/plugins/fields/view-searcher/view-searcher-option.vm"/>
+        <resource type="velocity" name="label" location="templates/plugins/fields/view-searcher/label-searcher-cascadingoption.vm"/>
+        <valid-customfield-type package="${project.groupId}.${project.artifactId}" key="vertec.project.cascading"/>
+    </customfield-searcher>	
+
+	<!-- the config link -->
+	<web-item key="ch.loewenfels.jira.plugin.config.webItem" name="Vertec Config Web Item"
+		section="admin_plugins_menu/integrations_section" weight="10">
+		<condition
+			class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
+			<param name="permission">admin</param>
+		</condition>
+		<label key="ch.loewenfels.jira.plugin.config.adminLink" i18n-name-key="ch.loewenfels.jira.plugin.config.adminLink"/>
+		<link linkId="vertec_config">/secure/admin/VertecConfigAction.jspa</link>
+	</web-item>
+	<webwork1 key="vertecConfigAction" name="Vertec Config Action">
+		<actions>
+			<action name="ch.loewenfels.jira.plugin.config.VertecConfigAction"
+				alias="VertecConfigAction">
+				<view name="success">/templates/config.vm</view>
+				<view name="input">/templates/config.vm</view>
+			</action>
+		</actions>
+	</webwork1>
+</atlassian-plugin>
