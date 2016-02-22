@@ -87,8 +87,8 @@ class VertecBookingService(config: VertecConfig, customFieldProvider: CustomFiel
 
   def insert(worklog: Worklog): VertecBookingResponse = {
     resolveVertecIds(worklog) match {
-      case Some(vertecIds) if VertecProjects.isPhaseAktiv(vertecIds.phaseId) => insertVertec(worklog, vertecIds)
-      case Some(vertecIds) => createLoggedBookingFaultNotCreated(worklog, s"Phase is not active")
+      case Some(vertecIds) if VertecProjects.isActive(vertecIds.phaseId) => insertVertec(worklog, vertecIds)
+      case Some(vertecIds) => createLoggedBookingFaultNotCreated(worklog, s"Phase or Project is not active")
       case _ => createLoggedBookingFaultNotCreated(worklog, s"Could not resolve Vertec Project/Phase")
     }
   }

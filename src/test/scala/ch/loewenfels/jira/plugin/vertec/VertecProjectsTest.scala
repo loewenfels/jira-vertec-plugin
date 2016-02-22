@@ -1,14 +1,15 @@
 package ch.loewenfels.jira.plugin.vertec
 
-;
+import scala.xml.Elem
 
-import ch.loewenfels.jira.plugin.vertec.VertecProjects.{Project, Projectphase}
 import org.junit.Test
 import org.scalatest.junit.AssertionsForJUnit
-import org.specs2.matcher.{XmlMatchers, ThrownExpectations, MustMatchers}
+import org.specs2.matcher.MustMatchers
+import org.specs2.matcher.ThrownExpectations
 import org.specs2.mock.Mockito
 
-import scala.xml.Elem
+import ch.loewenfels.jira.plugin.vertec.VertecProjects.Project
+import ch.loewenfels.jira.plugin.vertec.VertecProjects.Projectphase
 
 class VertecProjectsTest extends AssertionsForJUnit with Mockito with ThrownExpectations with MustMatchers {
   val ProjectResponseXml =
@@ -119,45 +120,46 @@ class VertecProjectsTest extends AssertionsForJUnit with Mockito with ThrownExpe
     assert(Map("12" -> expected) == actual)
   }
 
-  @Test def allAktivePhases_resonse_listWithPhase {
+  @Test def allActivePhases_resonse_listWithPhase {
     //arrange
     implicit val vertecClientMock = mock[VertecClient]
     vertecClientMock.oclQuery(startWith("projektphase"), any) returns PhaseResponseXml
     val expected = Projectphase("12", "PHASECODE", "123")
     //act
-    val result = VertecProjects.allAktivePhases
+    val result = VertecProjects.allActivePhases
     //assert
     assert(List(expected) === result)
   }
 
-  @Test def allAktivePhases_callToVertecClient_oclContainsAktive {
+  @Test def allActivePhases_callToVertecClient_oclContainsAktive {
     //arrange
     implicit val vertecClientMock = mock[VertecClient]
     vertecClientMock.oclQuery(startWith("projektphase"), any) returns PhaseResponseXml
     //act
-    VertecProjects.allAktivePhases
+    VertecProjects.allActivePhases
     //assert
     there was one(vertecClientMock).oclQuery(containing("aktiv"), any)
   }
 
-  @Test def isPhaseAktiv_responseMitObjId_true {
+  @Test def isActive_responseMitObjId_true {
     //arrange
     implicit val vertecClientMock = mock[VertecClient]
     vertecClientMock.oclQuery(startWith("projektphase"), any) returns PhaseResponseXml
     //act
-    val result = VertecProjects.isPhaseAktiv("123")
+    val result = VertecProjects.isActive("123")
     //assert
     assert(true === result)
   }
 
-  @Test def isPhaseAktiv_emptyResponse_false {
+  @Test def isActive_emptyResponse_false {
     //arrange
     implicit val vertecClientMock = mock[VertecClient]
     vertecClientMock.oclQuery(startWith("projektphase"), any) returns EmptyResponseXml
     //act
-    val result = VertecProjects.isPhaseAktiv("123")
+    val result = VertecProjects.isActive("123")
     //assert
     assert(false === result)
+    there was one(vertecClientMock).oclQuery(beMatching("projektphase.+->select\\(aktiv\\).+\\(projekt->select\\(aktiv\\)\\)".r), any)
   }
 
   @Test def taetigkeiten_callToVertecClient_ocl {
@@ -172,5 +174,6 @@ class VertecProjectsTest extends AssertionsForJUnit with Mockito with ThrownExpe
     there was two(vertecClientMock).oclQuery(containing("taetigkeit"), any)
 
   }
-
+  
+  
 }

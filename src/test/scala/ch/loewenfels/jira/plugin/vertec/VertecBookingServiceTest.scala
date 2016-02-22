@@ -221,7 +221,7 @@ class VertecBookingServiceTest extends AssertionsForJUnit with Mockito with Thro
     //act
     val actual = testee.insert(worklog)
     //assert
-    actual shouldBe BookingFault("tester: Worklog DEV-XY at 16.05.2015 spent 200 minutes (id=0) could not be created: Phase is not active")
+    actual shouldBe BookingFault("tester: Worklog DEV-XY at 16.05.2015 spent 200 minutes (id=0) could not be created: Phase or Project is not active")
   }
 
   @Test

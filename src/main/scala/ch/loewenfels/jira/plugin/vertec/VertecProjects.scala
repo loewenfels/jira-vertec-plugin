@@ -33,14 +33,14 @@ object VertecProjects {
         <member>beschrieb</member>
       </Resultdef>)
 
-    val phasesGroupByProject=allAktivePhases.groupBy(_.objref)
+    val phasesGroupByProject=allActivePhases.groupBy(_.objref)
     for (n <- result \\ "Projekt") yield {
       val objid=ObjidElem2Text(n)
       Project(objid, CodeElem2Text(n),phasesGroupByProject.getOrElse(objid, List()))
     }
   }
 
-  def allAktivePhases(implicit vertecClient: VertecClient) = {
+  def allActivePhases(implicit vertecClient: VertecClient) = {
     val result = vertecClient.oclQuery("projektphase->select(aktiv)",
       <Resultdef>
         <member>code</member>
@@ -50,8 +50,8 @@ object VertecProjects {
       yield Projectphase(ObjidElem2Text(n), CodeElem2Text(n), ObjrefElem2Text(n))
   }
 
-  def isPhaseAktiv(phaseObjId:String)(implicit vertecClient: VertecClient) = {
-    val result = vertecClient.oclQuery(s"projektphase->select(boldid=$phaseObjId)->select(aktiv)")
+  def isActive(phaseObjId:String)(implicit vertecClient: VertecClient) = {
+    val result = vertecClient.oclQuery(s"projektphase->select(boldid=$phaseObjId)->select(aktiv)->collect(projekt->select(aktiv))")
     (result \\ "objid").nonEmpty
   }
 
