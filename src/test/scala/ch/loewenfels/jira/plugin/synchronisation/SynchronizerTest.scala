@@ -1,25 +1,23 @@
-package ch.loewenfels.jira.plugin.vertec
+package ch.loewenfels.jira.plugin.synchronisation
 
-import org.junit.Test
-
-import scala.collection.JavaConversions._
+import scala.collection.JavaConversions.asScalaBuffer
+import scala.collection.JavaConversions.bufferAsJavaList
+import scala.collection.JavaConversions.seqAsJavaList
 import scala.collection.mutable.ListBuffer
 
+import org.junit.Test
 import org.scalatest.junit.AssertionsForJUnit
-import org.specs2.mock.Mockito
-import org.specs2.mock.mockito.MockitoMatchers
+import org.specs2.matcher.Matcher
 import org.specs2.matcher.MustMatchers
 import org.specs2.matcher.ThrownExpectations
-import org.specs2.matcher.Matcher
-import org.specs2.matcher.Matchers
-import com.atlassian.jira.issue.customfields.option.{ Option => JiraOption }
+import org.specs2.mock.Mockito
 
+import com.atlassian.jira.issue.customfields.option.{ Option => JiraOption }
 import com.atlassian.jira.issue.customfields.option.Options
 import com.atlassian.sal.api.pluginsettings.PluginSettings
 
 import ch.loewenfels.jira.plugin.vertec.VertecProjects.Project
 import ch.loewenfels.jira.plugin.vertec.VertecProjects.Projectphase
-import ch.loewenfels.jira.plugin.synchronisation.Synchronizer;
 
 class SynchronizerTest extends AssertionsForJUnit with Mockito with ThrownExpectations with MustMatchers {
 

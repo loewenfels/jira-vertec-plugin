@@ -1,8 +1,12 @@
 package ch.loewenfels.jira.plugin.vertec;
 
+import java.net.UnknownHostException
+
 import scala.xml.Elem
 import scala.xml.Node
 
+import org.apache.commons.httpclient.HttpClient
+import org.apache.commons.httpclient.HttpException
 import org.junit.Test
 import org.scalatest.Matchers.convertToAnyShouldWrapper
 import org.scalatest.Matchers.convertToStringShouldWrapper
@@ -98,6 +102,45 @@ class VertecClientTest extends AssertionsForJUnit with Mockito with XmlMatchers 
     testee.sendRequest(<MyBodyPart/>)
     //assert
     there was one(connector).send(argAsElem(\\(expectedHeaderElement)))
+  }
+
+  @Test def sendRequest_UnknownHostException_ExceptionAsResponse {
+    //arrange
+    val message = "unknown host exception occured"
+    val httpClient = mock[HttpClient]
+    httpClient.executeMethod(any) throws new UnknownHostException(message)
+    val connector: VertecClient.HttpConnector = new VertecClient.HttpConnector("http://foo.bar", httpClient)
+    val testee = VertecClient.create(mock[Credential], connector)
+    //act
+    val result = testee.sendRequest(<Request/>)
+    //assert
+    result.toString() shouldBe <Exception><message>Vertec not available: { message }</message></Exception>.toString()
+  }
+
+  @Test def sendRequest_ProtocolException_ExceptionAsResponse {
+    //arrange
+    val message = "protocol exception occurs"
+    val httpClient = mock[HttpClient]
+    httpClient.executeMethod(any) throws new HttpException(message)
+    val connector: VertecClient.HttpConnector = new VertecClient.HttpConnector("http://foo.bar", httpClient)
+    val testee = VertecClient.create(mock[Credential], connector)
+    //act
+    val result = testee.sendRequest(<Request/>)
+    //assert
+    result.toString() shouldBe <Exception><message>Vertec not available: { message }</message></Exception>.toString()
+  }
+
+  @Test def sendRequest_UnknownException_ExceptionAsResponse {
+    //arrange
+    val message = "runtime exception occurs"
+    val httpClient = mock[HttpClient]
+    httpClient.executeMethod(any) throws new RuntimeException(message)
+    val connector: VertecClient.HttpConnector = new VertecClient.HttpConnector("http://foo.bar", httpClient)
+    val testee = VertecClient.create(mock[Credential], connector)
+    //act
+    val result = testee.sendRequest(<Request/>)
+    //assert
+    result.toString() shouldBe <Exception><message>Unknown exception: { message }</message></Exception>.toString()
   }
 
   @Test(expected = classOf[NullPointerException])

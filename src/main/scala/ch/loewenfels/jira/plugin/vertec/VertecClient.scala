@@ -1,10 +1,19 @@
 package ch.loewenfels.jira.plugin.vertec
 
-import ch.loewenfels.jira.plugin.vertec.VertecClient.{ Connector, Credential }
+import java.io.IOException
+
+import scala.xml.Elem
+import scala.xml.Node
+import scala.xml.XML
+
 import org.apache.commons.httpclient.HttpClient
-import org.apache.commons.httpclient.methods.{ PostMethod, StringRequestEntity }
+import org.apache.commons.httpclient.methods.PostMethod
+import org.apache.commons.httpclient.methods.StringRequestEntity
 import org.slf4j.LoggerFactory
-import scala.xml.{ Elem, XML, Node }
+
+import ch.loewenfels.jira.plugin.vertec.VertecClient.Connector
+import ch.loewenfels.jira.plugin.vertec.VertecClient.Credential
+import ch.loewenfels.jira.plugin.vertec.VertecClient.HttpConnector
 
 object VertecClient {
 
@@ -14,18 +23,30 @@ object VertecClient {
     def send(envelope: Elem): Elem
   }
 
-  case class HttpConnector(vertecUrl: String) extends Connector with PasswordMasquerading {
+  case class HttpConnector(vertecUrl: String, httpClient: HttpClient = new HttpClient) extends Connector with PasswordMasquerading {
     val LOG = LoggerFactory.getLogger(classOf[HttpConnector])
+
     def send(envelope: Elem): Elem = {
       val post = new PostMethod(vertecUrl)
       val requestString = envelope.toString()
       post.setRequestEntity(new StringRequestEntity(requestString))
-      new HttpClient().executeMethod(post)
-      val result = XML.load(post.getResponseBodyAsStream)
-      LOG.debug("retrieved \n'{}'\n from vertec for request \n'{}'", result, mask(requestString))
-      result
+      try {
+        httpClient.executeMethod(post)
+        val result = XML.load(post.getResponseBodyAsStream)
+        LOG.debug("retrieved \n'{}'\n from vertec for request \n'{}'", result, mask(requestString))
+        result
+      } catch {
+        case io: IOException => handleException("Vertec not available", io)
+        case unknown: Throwable => handleException("Unknown exception", unknown)
+      } finally {
+        post.releaseConnection();
+      }
     }
 
+    def handleException(m: String, t: Throwable): Elem = {
+      LOG.error(m, t)
+      <Exception><message>{ m }: { t.getMessage() }</message></Exception>
+    }
   }
 
   trait PasswordMasquerading {

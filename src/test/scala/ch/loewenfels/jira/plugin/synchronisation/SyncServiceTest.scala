@@ -1,25 +1,24 @@
-package ch.loewenfels.jira.plugin.syncronisation
+package ch.loewenfels.jira.plugin.synchronisation
 
 import java.util.ArrayList
+
 import org.junit.Test
-import org.scalatest.MustMatchers
 import org.scalatest.junit.AssertionsForJUnit
+import org.specs2.matcher.MustMatchers
 import org.specs2.matcher.ThrownExpectations
 import org.specs2.mock.Mockito
+
 import com.atlassian.jira.issue.customfields.manager.OptionsManager
-import com.atlassian.jira.issue.customfields.option.{ Option => JiraOption }
 import com.atlassian.jira.issue.customfields.option.{ Option => JiraOption }
 import com.atlassian.jira.issue.customfields.option.Options
 import com.atlassian.jira.issue.fields.config.FieldConfig
 import com.atlassian.sal.api.pluginsettings.PluginSettings
+
 import ch.loewenfels.jira.plugin.config.VertecConfig
-import ch.loewenfels.jira.plugin.synchronisation.SyncService;
-import ch.loewenfels.jira.plugin.synchronisation.SyncProtocolToSettingsWriter
 
 class SyncServiceTest extends AssertionsForJUnit with Mockito with ThrownExpectations with MustMatchers {
 
-  @Test
-  def synchronize_vertecClientNone_noInteractionsOfOptionsManager() {
+  @Test def synchronize_vertecClientNone_noInteractionsOfOptionsManager {
     //arrange
     val fieldConfigId = "foo"
     val config = mock[VertecConfig]
@@ -34,8 +33,7 @@ class SyncServiceTest extends AssertionsForJUnit with Mockito with ThrownExpecta
     there was noCallsTo(optionsManager)
   }
 
-  @Test
-  def synchronize_vertecClientNone_logFailedSync() {
+  @Test def synchronize_vertecClientNone_logFailedSync {
     //arrange
     val fieldConfigId = "foo"
     val syncProtocolWriter = createSyncProtocolWriter
@@ -57,7 +55,7 @@ class SyncServiceTest extends AssertionsForJUnit with Mockito with ThrownExpecta
     val fieldConfigId = "foo"
     val syncProtocolWriter = createSyncProtocolWriter
     val config = mock[VertecConfig]
-    config.vertecUrl returns Some("localhost")
+    config.vertecUrl returns Some("http://localhost")
     config.vertecUser returns Some("dummy")
     config.vertecPassword returns Some("dummy")
 
@@ -67,7 +65,7 @@ class SyncServiceTest extends AssertionsForJUnit with Mockito with ThrownExpecta
     //act
     testee.synchronize(fieldConfig, syncProtocolWriter)
     //assert
-    there was one(syncProtocolWriter).log("Not able to fetch vertec projects:")
+    there was one(syncProtocolWriter).log("No vertec projects found. Check connection and state of Vertec.")
     there was one(syncProtocolWriter).flush
   }
 

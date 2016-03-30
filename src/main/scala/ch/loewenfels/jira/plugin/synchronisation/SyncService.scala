@@ -33,7 +33,7 @@ class SyncService(config: VertecConfig, optionsManager: OptionsManager) {
           case Failure(e) =>
             syncProtocol.log("Not able to fetch vertec projects:").log(e.getMessage).flush()
           case _ =>
-            syncProtocol.log("No vertec projects found. Check credentials.").flush()
+            syncProtocol.log("No vertec projects found. Check connection and state of Vertec.").flush()
         }
       }
       case _ => {
