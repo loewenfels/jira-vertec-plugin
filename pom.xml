@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>loepa-parent</artifactId>
-		<groupId>ch.loewenfels</groupId>
-		<version>2.4.0</version>
-	</parent>
 
 	<groupId>ch.loewenfels.jira.plugin</groupId>
 	<artifactId>jira-vertec-plugin</artifactId>
@@ -124,11 +120,13 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
+			<version>1.9.5</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -250,8 +248,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<scm>
-		<connection>scm:git:ssh://gerrit.loewenfels.ch:29418/loepa/jira-vertec-plugin</connection>
-		<developerConnection>scm:git:ssh://gerrit.loewenfels.ch:29418/loepa/jira-vertec-plugin</developerConnection>
-	</scm>
 </project>
