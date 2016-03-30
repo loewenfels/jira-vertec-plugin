@@ -1,5 +1,9 @@
 This plugin synchronizes time tracking information from JIRA to Vertec.
 
+Development
+-----------
+Install the Atlassian Plugin SDK from https://developer.atlassian.com/jiradev/getting-started
+
 Installation
 ------------
 1. Upload the jar file to JIRA
