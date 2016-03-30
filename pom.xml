@@ -26,6 +26,7 @@
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
 		<sonar.language>scala</sonar.language>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<pluginRepositories>
 		<pluginRepository>
@@ -62,14 +63,46 @@
 			<version>${jira.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Add dependency on jira-core if you want access to JIRA implementation 
-			classes as well as the sanctioned API. -->
-		<!-- This is not normally recommended, but may be required eg when migrating 
-			a plugin originally developed against JIRA 4.x -->
 		<dependency>
 			<groupId>com.atlassian.jira</groupId>
 			<artifactId>jira-core</artifactId>
 			<version>${jira.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.ofbiz</groupId>
+			<artifactId>entityengine</artifactId>
+			<version>1.0.58</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.event</groupId>
+			<artifactId>atlassian-event</artifactId>
+			<version>2.3.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.crowd</groupId>
+			<artifactId>embedded-crowd-api</artifactId>
+			<version>2.8.0-OD-6-JIRA-05</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.mail</groupId>
+			<artifactId>atlassian-mail</artifactId>
+			<version>2.5.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>2.5.6.SEC01</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -91,12 +124,19 @@
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>2.7</version>
+			<version>2.3</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.scalatest</groupId>
 			<artifactId>scalatest_${scala.major.minor.version}</artifactId>
 			<version>2.2.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.scalaz</groupId>
+			<artifactId>scalaz-concurrent_${scala.major.minor.version}</artifactId>
+			<version>7.1.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -113,6 +153,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.specs2</groupId>
+			<artifactId>specs2-matcher_${scala.major.minor.version}</artifactId>
+			<version>3.6</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.specs2</groupId>
+			<artifactId>specs2-common_${scala.major.minor.version}</artifactId>
+			<version>3.6</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.specs2</groupId>
 			<artifactId>specs2-matcher-extra_${scala.major.minor.version}</artifactId>
 			<version>3.6</version>
 			<scope>test</scope>
@@ -120,13 +172,19 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
 			<scope>test</scope>
+			<version>4.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<version>1.3</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -152,6 +210,7 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.2.2-atlassian-1</version>
+			<scope>provided</scope>
 		</dependency>
 		<!-- Uncomment to use TestKit in your project. Details at https://bitbucket.org/atlassian/jira-testkit -->
 		<!-- You can read more about TestKit at https://developer.atlassian.com/display/JIRADEV/Plugin+Tutorial+-+Smarter+integration+testing+with+TestKit -->
@@ -164,16 +223,28 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.1.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.atlassian.sal</groupId>
 			<artifactId>sal-api</artifactId>
 			<version>2.10.20</version>
 			<type>atlassian-plugin</type>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis</artifactId>
+			<version>1.3.04</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>xmlrpc</groupId>
+			<artifactId>xmlrpc</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>
@@ -186,6 +257,7 @@
 				<version>${amps.version}</version>
 				<extensions>true</extensions>
 				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
 					<productVersion>${jira.version}</productVersion>
 					<productDataVersion>${jira.version}</productDataVersion>
 					<!-- Uncomment to install TestKit backdoor in JIRA. -->
@@ -207,8 +279,43 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- plugin> <artifactId>maven-compiler-plugin</artifactId> <configuration> 
-				<source>1.6</source> <target>1.6</target> </configuration> </plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<id>analyze-only</id>
+						<goals>
+							<goal>analyze-only</goal>
+						</goals>
+						<configuration>
+							<ignoreNonCompile>true</ignoreNonCompile>
+							<failOnWarning>true</failOnWarning>
+							<outputXML>true</outputXML>
+						</configuration>
+					</execution>
+					<execution>
+						<id>analyze-dep-mgt</id>
+						<phase>package</phase>
+						<goals>
+							<goal>analyze-dep-mgt</goal>
+						</goals>
+						<configuration>
+							<failBuild>false</failBuild>
+							<ignoreDirect>false</ignoreDirect>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
